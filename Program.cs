@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Options;
 using ai_content_copilot.Models;
+using ai_content_copilot.Services;g
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,8 @@ builder.Services.AddHttpClient("GeminiClient", (serviceProvider, client) =>
     client.BaseAddress = new Uri("https://generativelanguage.googleapis.com/");
     client.DefaultRequestHeaders.Add("x-goog-api-key", settings.GeminiApiKey);
 });
+
+builder.Services.AddScoped<GeminiService>();
 
 
 builder.CreateUmbracoBuilder()
