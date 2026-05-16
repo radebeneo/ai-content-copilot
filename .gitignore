@@ -40,7 +40,7 @@ bld/
 # Visual Studio 2017 auto generated files
 Generated\ Files/
 
-# JetBrains IDE directoryS
+# JetBrains IDE directory
 .idea/
 
 # MSTest test Results
@@ -459,6 +459,9 @@ $RECYCLE.BIN/
 ##
 ## Umbraco CMS
 ##
+
+# JSON appsettings.json
+appsettings.json
 
 # JSON schema files for appsettings.json
 appsettings-schema.json

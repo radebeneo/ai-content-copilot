@@ -62,14 +62,14 @@ The tool is designed to feel like a natural part of the editorial workflow: prac
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
+| Layer | Technology                                     |
+|---|------------------------------------------------|
 | **CMS** | [Umbraco](https://umbraco.com/) (ASP.NET Core) |
-| **Backend** | C# / .NET |
-| **AI Provider** | [Anthropic Claude API](https://docs.anthropic.com/) |
-| **Frontend** | Vanilla JS + Razor partial view (`.cshtml`) |
-| **HTTP Client** | `IHttpClientFactory` (named client) |
-| **IDE** | JetBrains Rider |
+| **Backend** | C# / .NET                                      |
+| **AI Provider** | [Gemini API](https://docs.anthropic.com/)      |
+| **Frontend** | Vanilla JS + Razor partial view (`.cshtml`)    |
+| **HTTP Client** | `IHttpClientFactory` (named client)            |
+| **IDE** | JetBrains Rider                                |
 
 ---
 
@@ -134,7 +134,7 @@ MyProject/
 
 ```bash
 dotnet user-secrets init
-dotnet user-secrets set "AiCopilot:AnthropicApiKey" "sk-ant-your-key-here"
+dotnet user-secrets set "AiCopilot:GeminiApiKey" "ai-gem-your-key-here"
 ```
 
 **Option B — `appsettings.json`**
@@ -144,8 +144,8 @@ Add the following block to `appsettings.json`. Do **not** commit this file if it
 ```json
 {
   "AiCopilot": {
-    "AnthropicApiKey": "sk-ant-your-key-here",
-    "Model": "claude-sonnet-4-20250514",
+    "GeminiApiKey": "ai-gem-your-key-here",
+    "Model": "gemini-1.5-flash",
     "MaxTokens": 1000
   }
 }
@@ -280,11 +280,11 @@ AiCopilotController.cs
 PromptTemplates.cs  ──────►  Structured prompt string
         │
         ▼
-AnthropicService.cs
+GeminiService.cs
         │
-        │  POST https://api.anthropic.com/v1/messages
+        │  POST 
         ▼
-Claude API  ──────►  Generated text
+Gemini API  ──────►  Generated text
         │
         ▼
 Controller returns { result }
@@ -296,7 +296,7 @@ AiCopilot.cshtml (JS)  ──────►  Renders in output textarea
 **Key design decisions:**
 
 - **Prompts are centralised** in `PromptTemplates.cs` so they can be tuned independently of controller logic.
-- **`IHttpClientFactory`** is used for the Anthropic client to support connection pooling and avoid socket exhaustion.
+- **`IHttpClientFactory`** is used for the Gemini client to support connection pooling and avoid socket exhaustion.
 - **Strongly-typed settings** via `IOptions<AiCopilotSettings>` keep configuration clean and testable.
 - **No raw API complexity** is exposed to the frontend — editors interact only with action buttons and text areas.
 
@@ -307,7 +307,7 @@ AiCopilot.cshtml (JS)  ──────►  Renders in output textarea
 | Week | Focus | Key Deliverables                                                      |
 |---|---|-----------------------------------------------------------------------|
 | **Week 1** | Setup & planning | Project structure, environment config, user flow definition           |
-| **Week 2** | Backend integration | `AIService`, `PromptTemplates`, all 4 API endpoints, endpoint testing |
+| **Week 2** | Backend integration | `AiService`, `PromptTemplates`, all 4 API endpoints, endpoint testing |
 | **Week 3** | UI & error handling | Copilot panel partial view, frontend JS, structured error responses   |
 | **Week 4** | Polish & demo | Logging, UX improvements, documentation, demo recording               |
 
@@ -329,7 +329,7 @@ The following are explicitly out of scope for this project:
 
 1. Fork the repository and create a feature branch (`git checkout -b feature/your-feature`).
 2. Keep prompts in `PromptTemplates.cs` — do not hardcode them in controllers.
-3. Follow the existing error handling pattern (tuple return from `AIService`).
+3. Follow the existing error handling pattern (tuple return from `AiService`).
 4. Test new endpoints using the `AiCopilot.http` file before wiring up UI.
 5. Open a pull request with a clear description of what changed and why.
 
