@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
-using MyProject.Models;
-using MyProject.Services;
-
+using ai_content_copilot.Models;
+using ai_content_copilot.Services;
+    
 namespace ai_content_copilot.Controllers;
 
 [ApiController]
 [Route("api/ai-copilot")]
-public class AiCopilotController : Controller 
+
+public class AiCopilotController : ControllerBase 
 {
     private readonly GeminiService _geminiService;
     
@@ -14,7 +15,12 @@ public class AiCopilotController : Controller
     {
         _geminiService = geminiService;
     }
+    [HttpGet("ping")]
+    public IActionResult Ping() => Ok(new { status = "alive" });
     
+    [HttpGet("test")]
+    public IActionResult Test() => Ok("Controller is working");
+
     [HttpPost("generate-title")]
         public async Task<IActionResult> GenerateTitle([FromBody] ContentRequest request)
         {

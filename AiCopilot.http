@@ -1,0 +1,40 @@
+@port = 28144
+
+### Ping
+GET http://localhost:{{port}}/api/ai-copilot/ping
+
+### Test
+GET http://localhost:{{port}}/api/ai-copilot/test
+
+### Generate Title
+POST http://localhost:{{port}}/api/ai-copilot/generate-title
+Content-Type: application/json
+
+{
+  "content": "Umbraco is an open-source CMS built on ASP.NET Core, widely used for enterprise content management."
+}
+
+### Rewrite
+POST http://localhost:{{port}}/api/ai-copilot/rewrite
+Content-Type: application/json
+
+{
+  "content": "Our product is good and helps people do stuff faster.",
+  "tone": "professional"
+}
+
+### Summarize
+POST http://localhost:{{port}}/api/ai-copilot/summarize
+Content-Type: application/json
+
+{
+  "content": "Paste a long article or page copy here..."
+}
+
+### Meta Description
+POST http://localhost:{{port}}/api/ai-copilot/meta-description
+Content-Type: application/json
+
+{
+  "content": "This page covers everything about Umbraco CMS setup and configuration."
+}

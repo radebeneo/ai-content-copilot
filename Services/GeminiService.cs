@@ -53,13 +53,36 @@ public class GeminiService
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync(url, content);
-            response.EnsureSuccessStatusCode();
 
-            var responseJson = await response.Content.ReadAsStringAsync();
-            using var doc = JsonDocument.Parse((string)responseJson, new JsonDocumentOptions());
+            if (!response.IsSuccessStatusCode)
+            {
+                // if ((int)response.StatusCode == 429)
+                // {
+                //     var errorBody = await response.Content.ReadAsStringAsync();
+                //     _logger.LogWarning("Gemini rate limited: {Body}", errorBody);
+                //     return null;
+                // }
+                
+                var errorBody = await response.Content.ReadAsStringAsync();
+                _logger.LogError(
+                    "Gemini API  returned {StatusCode}: {Body}",
+                    (int)response.StatusCode,
+                    errorBody);
+                return null;
+            }
             
-            var text = doc.RootElement
-                .GetProperty("candidates")[0]
+            var responseJson = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(responseJson);
+            
+            
+            var candidates = doc.RootElement.GetProperty("candidates");
+            if (candidates.GetArrayLength() == 0)
+            {
+                _logger.LogWarning("Gemini returned empty candidates array");
+                return null;
+            }
+            
+            var text = candidates[0]
                 .GetProperty("content")
                 .GetProperty("parts")[0]
                 .GetProperty("text")
