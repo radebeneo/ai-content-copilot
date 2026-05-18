@@ -1,0 +1,14 @@
+{
+  "$schema": "../../umbraco-package-schema.json",
+  "name": "AI Copilot",
+  "id": "AiCopilot",
+  "version": "1.0.0",
+  "extensions": [
+    {
+      "type": "backofficeEntryPoint",
+      "alias": "AiCopilot.EntryPoint",
+      "name": "AI Copilot Entry Point",
+      "js": "/App_Plugins/AiCopilot/copilot.js"
+    }
+  ]
+}

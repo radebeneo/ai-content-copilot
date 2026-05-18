@@ -1,0 +1,143 @@
+@{
+    Layout = null;
+}
+
+<div id="ai-copilot-panel" style="
+    position: fixed; right: 0; top: 0; width: 360px; height: 100vh;
+    background: #1a1a2e; color: #f0f0f0; padding: 24px;
+    font-family: sans-serif; box-shadow: -4px 0 20px rgba(0,0,0,0.3);
+    z-index: 9999; overflow-y: auto; display: none; flex-direction: column; gap: 16px;">
+
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="margin: 0; font-size: 18px; color: #a78bfa;">✦ AI Copilot</h2>
+        <button onclick="toggleCopilot()" style="background: none; border: none; color: #9ca3af; cursor: pointer; font-size: 24px; padding: 0; line-height: 1;">&times;</button>
+    </div>
+
+    <!-- Input -->
+    <div>
+        <label style="font-size: 12px; color: #9ca3af;">Source content or brief</label>
+        <textarea id="copilot-input" rows="6" placeholder="Paste your content here..."
+            style="width: 100%; margin-top: 6px; padding: 10px; background: #0f0f23;
+                   border: 1px solid #374151; border-radius: 8px; color: #f0f0f0;
+                   font-size: 13px; resize: vertical; box-sizing: border-box;"></textarea>
+    </div>
+
+    <!-- Tone selector (for rewrite) -->
+    <div>
+        <label style="font-size: 12px; color: #9ca3af;">Tone (for rewrite)</label>
+        <select id="copilot-tone"
+            style="width: 100%; margin-top: 6px; padding: 8px; background: #0f0f23;
+                   border: 1px solid #374151; border-radius: 8px; color: #f0f0f0;">
+            <option value="professional">Professional</option>
+            <option value="friendly">Friendly</option>
+            <option value="concise">Concise</option>
+        </select>
+    </div>
+
+    <!-- Action Buttons -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <button onclick="runCopilot('generate-title')"   class="copilot-btn">Generate Title</button>
+        <button onclick="runCopilot('rewrite')"          class="copilot-btn">Rewrite</button>
+        <button onclick="runCopilot('summarize')"        class="copilot-btn">Summarize</button>
+        <button onclick="runCopilot('meta-description')" class="copilot-btn">Meta Desc</button>
+    </div>
+
+    <!-- Status -->
+    <div id="copilot-status" style="font-size: 12px; color: #6b7280; min-height: 16px;"></div>
+
+    <!-- Output -->
+    <div>
+        <label style="font-size: 12px; color: #9ca3af;">Generated output</label>
+        <textarea id="copilot-output" rows="8" placeholder="Output will appear here..."
+            style="width: 100%; margin-top: 6px; padding: 10px; background: #0f0f23;
+                   border: 1px solid #374151; border-radius: 8px; color: #f0f0f0;
+                   font-size: 13px; resize: vertical; box-sizing: border-box;"></textarea>
+    </div>
+
+    <!-- Copy Button -->
+    <button onclick="copyOutput()" class="copilot-btn" style="background: #7c3aed;">
+        📋 Copy to Clipboard
+    </button>
+</div>
+
+<div id="copilot-toggle-handle" onclick="toggleCopilot()" style="
+    position: fixed; right: 0; bottom: 20px; width: 50px; height: 50px;
+    background: #7c3aed; color: white; border-radius: 25px 0 0 25px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; box-shadow: -2px 0 10px rgba(0,0,0,0.3); z-index: 9998;
+    font-size: 24px;">
+    ✦
+</div>
+
+    <style>
+        .copilot-btn {
+            padding: 9px 12px; background: #2d2d44; color: #f0f0f0;
+            border: 1px solid #4b5563; border-radius: 8px; cursor: pointer;
+            font-size: 12px; transition: background 0.2s;
+        }
+        .copilot-btn:hover { background: #4c1d95; }
+        .copilot-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    </style>
+
+<script>
+    async function runCopilot(action) {
+        const input   = document.getElementById('copilot-input').value.trim();
+        const output  = document.getElementById('copilot-output');
+        const status  = document.getElementById('copilot-status');
+        const tone    = document.getElementById('copilot-tone').value;
+        const buttons = document.querySelectorAll('.copilot-btn');
+
+        if (!input) {
+            status.textContent = 'Please enter some content first.';
+            status.style.color = '#f59e0b';
+            return;
+        }
+
+        // Loading state
+        buttons.forEach(b => b.disabled = true);
+        output.value = '';
+        status.textContent = 'Generating...';
+        status.style.color = '#a78bfa';
+
+        try {
+            const response = await fetch(`/api/ai-copilot/${action}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: input, tone: tone })
+            });
+
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.error || 'Unknown error');
+            }
+
+            const data = await response.json();
+            output.value = data.result;
+            status.textContent = 'Done!';
+            status.style.color = '#34d399';
+
+        } catch (err) {
+            status.textContent = `Error: ${err.message}`;
+            status.style.color = '#f87171';
+        } finally {
+            buttons.forEach(b => b.disabled = false);
+        }
+    }
+
+    function copyOutput() {
+        const output = document.getElementById('copilot-output');
+        if (!output.value) return;
+        navigator.clipboard.writeText(output.value).then(() => {
+            document.getElementById('copilot-status').textContent = 'Copied!';
+        });
+    }
+
+    function toggleCopilot() {
+        const panel = document.getElementById('ai-copilot-panel');
+        if (panel.style.display === 'none') {
+            panel.style.display = 'flex';
+        } else {
+            panel.style.display = 'none';
+        }
+    }
+</script>
