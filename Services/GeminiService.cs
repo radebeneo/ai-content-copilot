@@ -25,75 +25,74 @@ public class GeminiService
 
     public async Task<string?> GenerateAsync(string prompt)
     {
-        try
+        int[] retryDelaysMs = [1000, 3000, 7000];
+
+        for (int attempt = 0; attempt <= retryDelaysMs.Length; attempt++)
         {
-            var client = _httpClientFactory.CreateClient("GeminiClient");
-            string model = _settings.Model;
-            var url = $"v1beta/models/{model}:generateContent";
+           try
+           {
+               var client = _httpClientFactory.CreateClient("GeminiClient");
+               string model = _settings.Model;
+               var url = $"v1beta/models/{model}:generateContent";
+   
+               var requestBody = new
+               {
+                   contents = new[]
+                   {
+                       new { parts = new[] { new { text = prompt } } }
+                   },
+                   generationConfig = new { maxOutputTokens = _settings.MaxOutputTokens }
+               };
+   
+               var json = JsonSerializer.Serialize(requestBody);
+               var content = new StringContent(json, Encoding.UTF8, "application/json");
+               var response = await client.PostAsync(url, content);
+               
+               if ((int)response.StatusCode is 503 or 429 or 500 && attempt < retryDelaysMs.Length)
+               {
+                   var errorBody = await response.Content.ReadAsStringAsync();
+                   _logger.LogWarning(
+                       "Gemini attempt {Attempt} returned {Status}, retrying in {Delay}ms: {Body}",
+                       attempt + 1, (int)response.StatusCode, retryDelaysMs[attempt], errorBody);
 
-            var requestBody = new
-            {
-                contents = new[]
-                {
-                    new
-                    {
-                        parts = new[]
-                        {
-                            new { text = prompt }
-                        }
-                    }
-                },
-                generationConfig = new
-                {
-                    maxOutputTokens = _settings.MaxOutputTokens
-                }
-            };
-
-            var json = JsonSerializer.Serialize(requestBody);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await client.PostAsync(url, content);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                // if ((int)response.StatusCode == 429)
-                // {
-                //     var errorBody = await response.Content.ReadAsStringAsync();
-                //     _logger.LogWarning("Gemini rate limited: {Body}", errorBody);
-                //     return null;
-                // }
-                
-                var errorBody = await response.Content.ReadAsStringAsync();
-                _logger.LogError(
-                    "Gemini API  returned {StatusCode}: {Body}",
-                    (int)response.StatusCode,
-                    errorBody);
-                return null;
-            }
-            
-            var responseJson = await response.Content.ReadAsStringAsync();
-            using var doc = JsonDocument.Parse(responseJson);
-            
-            
-            var candidates = doc.RootElement.GetProperty("candidates");
-            if (candidates.GetArrayLength() == 0)
-            {
-                _logger.LogWarning("Gemini returned empty candidates array");
-                return null;
-            }
-            
-            var text = candidates[0]
-                .GetProperty("content")
-                .GetProperty("parts")[0]
-                .GetProperty("text")
-                .GetString();
-
-            return text;
+                   await Task.Delay(retryDelaysMs[attempt]);
+                   continue;
+               }
+   
+               if (!response.IsSuccessStatusCode)
+               {
+                   var errorBody = await response.Content.ReadAsStringAsync();
+                   _logger.LogError(
+                       "Gemini API  returned {StatusCode}: {Body}",
+                       (int)response.StatusCode, errorBody);
+                   return null;
+               }
+               
+               var responseJson = await response.Content.ReadAsStringAsync();
+               using var doc = JsonDocument.Parse(responseJson);
+               
+               
+               var candidates = doc.RootElement.GetProperty("candidates");
+               if (candidates.GetArrayLength() == 0)
+               {
+                   _logger.LogWarning("Gemini returned empty candidates array");
+                   return null;
+               }
+               
+               var text = candidates[0]
+                   .GetProperty("content")
+                   .GetProperty("parts")[0]
+                   .GetProperty("text")
+                   .GetString();
+           }
+           catch (Exception e)
+           {
+               _logger.LogError(e, "Gemini API call failed on attempt {Attempt}", attempt + 1);
+               
+               if (attempt < retryDelaysMs.Length)
+                   await Task.Delay(retryDelaysMs[attempt]);
+           } 
         }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Gemini API call failed");
-            return null;
-        }
+        return null;
     }
 }
