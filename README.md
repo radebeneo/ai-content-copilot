@@ -66,7 +66,7 @@ The tool is designed to feel like a natural part of the editorial workflow: prac
 |---|------------------------------------------------|
 | **CMS** | [Umbraco](https://umbraco.com/) (ASP.NET Core) |
 | **Backend** | C# / .NET                                      |
-| **AI Provider** | [Gemini API](https://docs.anthropic.com/)      |
+| **AI Provider** | [Ollama]                                       |
 | **Frontend** | Vanilla JS + Razor partial view (`.cshtml`)    |
 | **HTTP Client** | `IHttpClientFactory` (named client)            |
 | **IDE** | JetBrains Rider                                |
@@ -83,13 +83,12 @@ MyProject/
 │   ├── AiCopilotSettings.cs        # Strongly-typed config binding
 │   └── ContentRequest.cs           # Request body model
 ├── Services/
-│   ├── AnthropicService.cs         # HTTP client wrapper for the Claude API
+│   ├── IAiService.cs
+│   ├── OllamaService.cs       
 │   └── PromptTemplates.cs          # All prompt definitions (centralised)
 ├── Views/
-│   ├── Partials/
-│   │   └── AiCopilot.cshtml        # Copilot sidebar panel (UI + JS)
-│   └── Shared/
-│       └── _Layout.cshtml          # Main layout (panel rendered here)
+│   └── Partials/
+│       └── AiCopilot.cshtml        # Copilot sidebar panel (UI + JS)
 ├── wwwroot/
 ├── AiCopilot.http                  # Rider HTTP client test file
 ├── appsettings.json                # App configuration (no secrets committed)
@@ -102,9 +101,9 @@ MyProject/
 
 ### Prerequisites
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download) or later
+- [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download) or later
 - [JetBrains Rider](https://www.jetbrains.com/rider/) (recommended) or Visual Studio 2022+
-- An [Anthropic API key](https://console.anthropic.com/)
+- [Ollama]
 - Umbraco templates installed via the .NET CLI (`dotnet new umbraco`)
 
 ### Installation
@@ -130,23 +129,14 @@ MyProject/
 
 ### Configuration
 
-**Option A — User Secrets (recommended for local development)**
-
-```bash
-dotnet user-secrets init
-dotnet user-secrets set "AiCopilot:GeminiApiKey" "ai-gem-your-key-here"
-```
-
-**Option B — `appsettings.json`**
-
 Add the following block to `appsettings.json`. Do **not** commit this file if it contains a real API key.
 
 ```json
 {
   "AiCopilot": {
-    "GeminiApiKey": "ai-gem-your-key-here",
-    "Model": "gemini-1.5-flash",
-    "MaxTokens": 1000
+    "OllamaBaseUrl": "http://localhost:11434",
+    "OllamaModel": "llama3.1:8b",
+    "MaxOutputTokens": 1000
   }
 }
 ```
@@ -248,7 +238,6 @@ Generates an SEO meta description under 160 characters.
 | Status Code | Meaning |
 |---|---|
 | `400` | Missing or empty `content` field |
-| `500` | Anthropic API call failed or unexpected server error |
 
 ---
 
@@ -280,11 +269,11 @@ AiCopilotController.cs
 PromptTemplates.cs  ──────►  Structured prompt string
         │
         ▼
-GeminiService.cs
+OllamaService.cs
         │
         │  POST 
         ▼
-Gemini API  ──────►  Generated text
+Ollama API  ──────►  Generated text
         │
         ▼
 Controller returns { result }
@@ -296,7 +285,7 @@ AiCopilot.cshtml (JS)  ──────►  Renders in output textarea
 **Key design decisions:**
 
 - **Prompts are centralised** in `PromptTemplates.cs` so they can be tuned independently of controller logic.
-- **`IHttpClientFactory`** is used for the Gemini client to support connection pooling and avoid socket exhaustion.
+- **`IHttpClientFactory`** is used for the Ollama client to support connection pooling and avoid socket exhaustion.
 - **Strongly-typed settings** via `IOptions<AiCopilotSettings>` keep configuration clean and testable.
 - **No raw API complexity** is exposed to the frontend — editors interact only with action buttons and text areas.
 
