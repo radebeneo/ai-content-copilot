@@ -7,19 +7,25 @@ namespace ai_content_copilot.Controllers;
 [ApiController]
 [Route("api/ai-copilot")]
 
-public class AiCopilotController : ControllerBase 
+public class AiCopilotController : Controller 
 {
-    private readonly GeminiService _geminiService;
+    private readonly IAiService _aiService;
     
-    public AiCopilotController(GeminiService geminiService)
+    public AiCopilotController(IAiService aiService)
     {
-        _geminiService = geminiService;
+        _aiService = aiService;
     }
     [HttpGet("ping")]
     public IActionResult Ping() => Ok(new { status = "alive" });
     
     [HttpGet("test")]
     public IActionResult Test() => Ok("Controller is working");
+
+    [HttpGet("render")]
+    public IActionResult Render()
+    {
+        return PartialView("~/Views/Partials/AiCopilot.cshtml");
+    }
 
     [HttpPost("generate-title")]
         public async Task<IActionResult> GenerateTitle([FromBody] ContentRequest request)
@@ -28,7 +34,7 @@ public class AiCopilotController : ControllerBase
                 return BadRequest(new { error = "Content is required." });
     
             var prompt = PromptTemplates.GenerateTitle(request.Content);
-            var result = await _geminiService.GenerateAsync(prompt);
+            var result = await _aiService.GenerateAsync(prompt);
     
             return result is null
                 ? StatusCode(500, new { error = "Generation failed." })
@@ -43,7 +49,7 @@ public class AiCopilotController : ControllerBase
     
             var tone = string.IsNullOrWhiteSpace(request.Tone) ? "professional" : request.Tone;
             var prompt = PromptTemplates.RewriteContent(request.Content, tone);
-            var result = await _geminiService.GenerateAsync(prompt);
+            var result = await _aiService.GenerateAsync(prompt);
     
             return result is null
                 ? StatusCode(500, new { error = "Generation failed." })
@@ -57,7 +63,7 @@ public class AiCopilotController : ControllerBase
                 return BadRequest(new { error = "Content is required." });
     
             var prompt = PromptTemplates.Summarize(request.Content);
-            var result = await _geminiService.GenerateAsync(prompt);
+            var result = await _aiService.GenerateAsync(prompt);
     
             return result is null
                 ? StatusCode(500, new { error = "Generation failed." })
@@ -71,7 +77,7 @@ public class AiCopilotController : ControllerBase
                 return BadRequest(new { error = "Content is required." });
     
             var prompt = PromptTemplates.GenerateMetaDescription(request.Content);
-            var result = await _geminiService.GenerateAsync(prompt);
+            var result = await _aiService.GenerateAsync(prompt);
     
             return result is null
                 ? StatusCode(500, new { error = "Generation failed." })
