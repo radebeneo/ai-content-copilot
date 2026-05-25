@@ -1,0 +1,98 @@
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.NewsDetail>
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = Model.Heading ?? "News Detail";
+    ViewData["Description"] = Model.Subheading;
+    
+    var imgUrl = Model.HeaderImage?.Url() ?? "/media/2gtdwgto/image.jpg";
+    var newsLanding = Model.Root().FirstChild<ContentModels.NewsLandingPage>();
+}
+
+<article class="container" style="padding-top: 40px;">
+    <!-- Article Header -->
+    <div class="article-header">
+        <div class="article-meta">
+            <span class="badge-live">Tournament News</span>
+            <span>Published: @Model.CreateDate.ToString("MMMM dd, yyyy")</span>
+            <span>By Editorial Team</span>
+        </div>
+        <h1 class="article-title">@Model.Heading</h1>
+        @if (!string.IsNullOrEmpty(Model.Subheading))
+        {
+            <p class="article-subheading">@Model.Subheading</p>
+        }
+    </div>
+
+    <!-- Article Hero Image -->
+    <img src="@imgUrl" alt="@Model.Heading" class="article-hero-image" />
+
+    <!-- Article Content Grid -->
+    <div class="article-body-wrapper">
+        <!-- Main Body Text -->
+        <div class="article-body">
+            @Model.Body
+
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vel molestie lorem. Phasellus congue justo quis eros pharetra, vitae consequat tellus consequat. Vivamus ut lorem non sapien egestas scelerisque non in diam. Mauris eget nibh erat. Sed sollicitudin sodales libero at dignissim. Nam cursus nisl sed dolor hendrerit, scelerisque interdum ex commodo. Sed consequat a neque ut tristique.</p>
+
+            <h3 style="margin: 32px 0 16px; font-size: 24px; font-weight: 700; color: white;">A New Era of Football</h3>
+            <p>Morbi finibus arcu nec nisi condimentum, in bibendum lectus eleifend. Praesent a nunc ut nunc dictum aliquam vitae vitae neque. Mauris dictum sodales dolor at iaculis. Fusce feugiat purus nunc, sit amet euismod sem imperdiet at. Maecenas ac erat sed turpis volutpat elementum. Ut cursus, velit et convallis convallis, metus leo porta ex, at accumsan velit nibh ac felis. Proin aliquet nisl ligula, at tincidunt magna mattis vel.</p>
+
+            <blockquote style="
+                border-left: 4px solid var(--primary); 
+                padding: 16px 24px; 
+                margin: 32px 0; 
+                background: rgba(255,255,255,0.02); 
+                border-radius: 0 12px 12px 0; 
+                font-style: italic; 
+                font-size: 18px; 
+                line-height: 1.6;
+                color: #e2e8f0;">
+                "The World Cup 2026 will redefine how we experience football on a global scale. With 48 nations competing across North America, the scale of this tournament will reach unprecedented heights."
+            </blockquote>
+
+            <p>Phasellus finibus accumsan libero, tristique mattis ante. Pellentesque molestie elementum nisl, non tempor neque laoreet vitae. Nam eget nunc at sapien consequat lacinia. Aenean ac risus eget nibh pellentesque dignissim. Sed vel justo volutpat, maximus metus in, molestie turpis. Suspendisse pulvinar erat sit amet purus sollicitudin, ut lacinia sapien congue.</p>
+
+            <p>Donec feugiat tellus et dolor eleifend hendrerit. Etiam imperdiet nibh at dui tincidunt, eu posuere ligula fringilla. Suspendisse vestibulum pretium nulla, vitae eleifend elit dictum vel. Nam tempus finibus arcu et vulputate. Proin pulvinar sollicitudin ex nec consequat. Duis ac efficitur turpis, vel eleifend risus.</p>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="article-sidebar">
+            @if (newsLanding != null)
+            {
+                <h3 class="sidebar-title">More Stories</h3>
+                <ul class="sidebar-list" style="margin-bottom: 40px;">
+                    @foreach (var sisterArticle in newsLanding.Children<ContentModels.NewsDetail>().Where(x => x.Id != Model.Id).Take(3))
+                    {
+                        <li class="sidebar-item">
+                            <a href="@sisterArticle.Url()" class="sidebar-item-title">@sisterArticle.Heading</a>
+                            <span class="sidebar-item-date">@sisterArticle.CreateDate.ToString("MMM dd, yyyy")</span>
+                        </li>
+                    }
+                   
+                </ul>
+            }
+
+            <h3 class="sidebar-title">Tournament Facts</h3>
+            <div style="font-size: 13px; color: var(--text-muted); display: flex; flex-direction: column; gap: 12px;">
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                    <span>Start Date:</span>
+                    <span style="color: white; font-weight: 600;">June 11, 2026</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                    <span>End Date:</span>
+                    <span style="color: white; font-weight: 600;">July 19, 2026</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                    <span>Teams:</span>
+                    <span style="color: white; font-weight: 600;">48 (Expanded)</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding-bottom: 8px;">
+                    <span>Matches:</span>
+                    <span style="color: white; font-weight: 600;">104 Matches</span>
+                </div>
+            </div>
+        </aside>
+    </div>
+</article>

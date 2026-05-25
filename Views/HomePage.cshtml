@@ -1,0 +1,183 @@
+﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.HomePage>
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = Model.SiteTitle ?? "Welcome";
+    ViewData["Description"] = Model.SiteSubtitle;
+    
+    // Fetch latest news articles from the NewsLandingPage node dynamically
+    var newsLanding = Model.Root().FirstChild<ContentModels.NewsLandingPage>();
+    var articles = newsLanding?.Children<ContentModels.NewsDetail>().Take(3).ToList() ?? new List<ContentModels.NewsDetail>();
+}
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <span class="badge-live" style="margin-bottom: 20px;">FIFA World Cup 2026</span>
+        <h1>@Model.SiteTitle</h1>
+        <p>@Model.SiteSubtitle. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam at porttitor sem. Curabitur sed nisl eget elit mollis at feugiat urna sodales. Aliquam erat volutpat.</p>
+        <div style="display: flex; justify-content: center; gap: 16px;">
+            @if (newsLanding != null)
+            {
+                <a href="@newsLanding.Url()" class="cta-button">Read News Feed</a>
+            }
+            <a href="#tournament-info" class="cta-button" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: white;">Learn More</a>
+        </div>
+    </div>
+</section>
+
+<!-- Countdown & Quick Stats -->
+<section style="background: rgba(16, 185, 129, 0.03); border-top: 1px solid rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.03); padding: 40px 0;">
+    <div class="container" style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 32px; text-align: center;">
+        <div>
+            <h3 style="font-size: 36px; color: var(--primary); font-weight: 800; line-height: 1;">48</h3>
+            <p style="font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 8px;">Teams Competing</p>
+        </div>
+        <div>
+            <h3 style="font-size: 36px; color: var(--accent); font-weight: 800; line-height: 1;">16</h3>
+            <p style="font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 8px;">Host Cities</p>
+        </div>
+        <div>
+            <h3 style="font-size: 36px; color: var(--secondary); font-weight: 800; line-height: 1;">104</h3>
+            <p style="font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 8px;">Total Matches</p>
+        </div>
+        <div>
+            <h3 style="font-size: 36px; color: #ef4444; font-weight: 800; line-height: 1;">3</h3>
+            <p style="font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 8px;">Host Nations</p>
+        </div>
+    </div>
+</section>
+
+<!-- Latest News Section -->
+<section class="container" style="padding-top: 80px;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px;">
+        <div>
+            <h2 style="font-size: 32px; font-weight: 800;">Featured Coverage</h2>
+            <p style="color: var(--text-muted); margin-top: 8px;">Stay ahead with the latest analysis and tournament breaking news.</p>
+        </div>
+        @if (newsLanding != null)
+        {
+            <a href="@newsLanding.Url()" style="color: var(--primary); font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                View All News 
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+        }
+    </div>
+
+    <div class="news-grid">
+        @if (articles.Any())
+        {
+            @foreach (var article in articles)
+            {
+                var imgUrl = article.HeaderImage?.Url() ?? "/media/2gtdwgto/image.jpg";
+                <article class="news-card">
+                    <div class="card-image-wrapper">
+                        <img src="@imgUrl" alt="@article.Heading" />
+                        <span class="card-badge">News</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-date">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            @article.CreateDate.ToString("MMMM dd, yyyy")
+                        </div>
+                        <h3 class="card-title"><a href="@article.Url()">@article.Heading</a></h3>
+                        <p class="card-excerpt">@(string.IsNullOrEmpty(article.Subheading) ? "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras interdum pretium purus..." : article.Subheading)</p>
+                        <a href="@article.Url()" class="card-link">
+                            Read Article 
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </a>
+                    </div>
+                </article>
+            }
+        }
+        else
+        {
+            <!-- Fallback Mock Cards if no DB articles exist -->
+            <article class="news-card">
+                <div class="card-image-wrapper">
+                    <img src="/media/2gtdwgto/image.jpg" alt="FIFA 26 Stadium" />
+                    <span class="card-badge">Tournament</span>
+                </div>
+                <div class="card-content">
+                    <div class="card-date">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        May 25, 2026
+                    </div>
+                    <h3 class="card-title"><a href="#">Expanding the Dream: 48 Teams Face Off</a></h3>
+                    <p class="card-excerpt">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras interdum pretium purus. Morbi convallis imperdiet leo eget porta. Pellentesque dictum accumsan pulvinar.</p>
+                    <a href="#" class="card-link">
+                        Read Article 
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </div>
+            </article>
+
+            <article class="news-card">
+                <div class="card-image-wrapper">
+                    <img src="/media/2gtdwgto/image.jpg" alt="Soccer Ball Pitch" />
+                    <span class="card-badge">Exclusive</span>
+                </div>
+                <div class="card-content">
+                    <div class="card-date">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        May 22, 2026
+                    </div>
+                    <h3 class="card-title"><a href="#">New Stadium Technologies Unveiled</a></h3>
+                    <p class="card-excerpt">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut feugiat ipsum ac lectus iaculis molestie. Suspendisse eu hendrerit tellus. Praesent tempor ex in imperdiet facilisis.</p>
+                    <a href="#" class="card-link">
+                        Read Article 
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </div>
+            </article>
+
+            <article class="news-card">
+                <div class="card-image-wrapper">
+                    <img src="/media/2gtdwgto/image.jpg" alt="Match Kickoff" />
+                    <span class="card-badge">Matches</span>
+                </div>
+                <div class="card-content">
+                    <div class="card-date">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        May 19, 2026
+                    </div>
+                    <h3 class="card-title"><a href="#">Opening Match Venues Analysis</a></h3>
+                    <p class="card-excerpt">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed hendrerit pretium mi eget laoreet. Integer hendrerit nibh nulla, ut bibendum lectus finibus sit amet.</p>
+                    <a href="#" class="card-link">
+                        Read Article 
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </div>
+            </article>
+        }
+    </div>
+</section>
+
+<!-- Host Cities Section -->
+<section id="tournament-info" style="background: rgba(255,255,255,0.01); border-top: 1px solid rgba(255,255,255,0.03); margin-top: 80px; padding: 80px 0;">
+    <div class="container">
+        <div style="text-align: center; max-width: 600px; margin: 0 auto 50px;">
+            <h2 style="font-size: 32px; font-weight: 800;">Three Nations, One Tournament</h2>
+            <p style="color: var(--text-muted); margin-top: 12px;">For the first time in history, the FIFA World Cup will be hosted across 16 cities in Canada, Mexico, and the United States.</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+            <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 24px;">
+                <h3 style="color: var(--primary); font-size: 20px; margin-bottom: 12px;">United States</h3>
+                <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
+                <div style="font-weight: 600; font-size: 13px;">11 Host Cities</div>
+            </div>
+            <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 24px;">
+                <h3 style="color: var(--accent); font-size: 20px; margin-bottom: 12px;">Mexico</h3>
+                <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nibh nisl condimentum id venenatis a. Est placerat in egestas erat imperdiet sed euismod nisi porta lacing.</p>
+                <div style="font-weight: 600; font-size: 13px;">3 Host Cities</div>
+            </div>
+            <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 24px;">
+                <h3 style="color: var(--secondary); font-size: 20px; margin-bottom: 12px;">Canada</h3>
+                <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui mauris. Vivamus hendrerit arcu sed erat molestie vehicula. Sed auctor neque eu pretium finibus.</p>
+                <div style="font-weight: 600; font-size: 13px;">2 Host Cities</div>
+            </div>
+        </div>
+    </div>
+</section>

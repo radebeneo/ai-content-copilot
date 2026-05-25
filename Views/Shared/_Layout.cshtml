@@ -1,0 +1,123 @@
+@using Umbraco.Cms.Web.Common.PublishedModels
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+@{
+    // Retrieve the home page to get site settings
+    var homePage = Model.AncestorOrSelf<ContentModels.HomePage>();
+    var siteTitle = homePage?.SiteTitle ?? "FIFA World Cup 2026 News";
+    var siteSubtitle = homePage?.SiteSubtitle ?? "Your ultimate destination for the 2026 World Cup updates";
+    
+    // Determine dynamic navigation links
+    var root = Model.Root();
+    var newsLanding = root?.FirstChild<ContentModels.NewsLandingPage>();
+    
+    var homeUrl = root?.Url() ?? "/";
+    var newsUrl = newsLanding?.Url() ?? "/news/";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] | @siteTitle</title>
+    <meta name="description" content="@(ViewData["Description"] ?? siteSubtitle)" />
+    
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="/css/site.css" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+
+    <!-- Sticky Header -->
+    <header>
+        <div class="nav-container">
+            <a href="@homeUrl" class="logo-link">
+                <div class="logo-icon">⚽</div>
+                <span>@siteTitle</span>
+            </a>
+            
+            <nav>
+                <ul>
+                    <li><a href="@homeUrl" id="nav-home">Home</a></li>
+                    <li><a href="#" id="nav-news">News Feed</a></li>
+                    <li><a href="#" id="nav-matches">Matches</a></li>
+                    <li><a href="#" id="nav-teams">Teams</a></li>
+                </ul>
+            </nav>
+            
+            <a href="@newsUrl" class="cta-button" id="cta-tickets">Latest News</a>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main>
+        @RenderBody()
+    </main>
+
+    <!-- Floating AI Copilot Panel -->
+    @await Html.PartialAsync("AiCopilot")
+
+    <!-- Premium Footer -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-column">
+                <div class="footer-brand">⚽ @siteTitle</div>
+                <p class="footer-description">
+                    @siteSubtitle Offering premium articles, real-time match reports, team analysis, and the latest tournament updates straight from the pitch.
+                </p>
+                <div style="display: flex; gap: 12px; margin-top: 10px;">
+                    <span class="badge-live">LIVE UPDATES</span>
+                </div>
+            </div>
+            
+            <div class="footer-column">
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="@homeUrl">Home</a></li>
+                    <li><a href="@newsUrl">News Feed</a></li>
+                    <li><a href="#">Match Schedule</a></li>
+                    <li><a href="#">Standings</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h4 class="footer-title">Host Cities</h4>
+                <ul class="footer-links">
+                    <li><a href="#">New York / New Jersey</a></li>
+                    <li><a href="#">Los Angeles</a></li>
+                    <li><a href="#">Mexico City</a></li>
+                    <li><a href="#">Vancouver</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h4 class="footer-title">Subscribe to Updates</h4>
+                <p class="footer-description" style="font-size: 13px;">
+                    Stay updated with breaking news, exclusive stories, and ticket announcements.
+                </p>
+                <div style="display: flex; gap: 8px; margin-top: 8px;">
+                    <input type="email" placeholder="Your email address" style="
+                        flex-grow: 1; padding: 10px 14px; background: rgba(255,255,255,0.05); 
+                        border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 13px;" />
+                    <button class="cta-button" style="padding: 10px 16px; border-radius: 8px; border: none; cursor: pointer;">Join</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div>
+                &copy; @DateTime.Now.Year @siteTitle. All rights reserved.
+            </div>
+            <div style="display: flex; gap: 24px;">
+                <a href="#" style="opacity: 0.7; hover: opacity: 1;">Privacy Policy</a>
+                <a href="#" style="opacity: 0.7; hover: opacity: 1;">Terms of Service</a>
+                <a href="#" style="opacity: 0.7; hover: opacity: 1;">Cookie Settings</a>
+            </div>
+        </div>
+    </footer>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
