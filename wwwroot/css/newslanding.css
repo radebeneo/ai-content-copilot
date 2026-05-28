@@ -1,0 +1,119 @@
+/* NewsLandingPage Styles */
+.nl-section {
+    padding-top: 60px;
+}
+
+.nl-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 24px;
+    margin-bottom: 40px;
+}
+
+.nl-badge {
+    margin-bottom: 12px;
+}
+
+.nl-title {
+    font-size: 48px;
+    font-weight: 800;
+}
+
+.nl-subtitle {
+    color: var(--text-muted);
+    font-size: 18px;
+    margin-top: 8px;
+}
+
+.nl-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+}
+
+.nl-card {
+    flex-direction: row;
+    min-height: 240px;
+}
+
+.nl-card-highlight {
+    border-color: var(--primary);
+}
+
+.nl-card-image-wrapper {
+    width: 35%;
+    aspect-ratio: auto;
+    min-height: 100%;
+}
+
+.nl-card-img {
+    height: 100%;
+    object-fit: cover;
+}
+
+.nl-card-content {
+    width: 65%;
+    padding: 24px;
+}
+
+.nl-card-badge {
+    font-size: 9px;
+    padding: 2px 6px;
+    margin-left: 10px;
+}
+
+.nl-card-title {
+    font-size: 22px;
+    margin-bottom: 8px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.nl-card-title-link {
+    color: white;
+    transition: color 0.2s ease;
+}
+
+.nl-card-title-link:hover {
+    color: var(--primary);
+}
+
+.nl-card-text {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    flex-grow: 1;
+}
+
+.nl-sidebar-list {
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.nl-sidebar-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+}
+
+.nl-sidebar-link-active {
+    color: var(--primary);
+}
+
+.nl-sidebar-count {
+    opacity: 0.5;
+}
+
+.nl-sidebar-text {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.nl-sidebar-text-last {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+}

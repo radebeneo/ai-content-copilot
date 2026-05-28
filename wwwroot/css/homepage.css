@@ -1,0 +1,155 @@
+/* wwwroot/css/homepage.css */
+
+/* Hero Section */
+.hp-badge {
+    margin-bottom: 20px;
+}
+
+.hp-hero-cta-container {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+/* Stats Section */
+.hp-stats-section {
+    background: rgba(16, 185, 129, 0.03);
+    border-top: 1px solid rgba(255,255,255,0.03);
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    padding: 40px 0;
+}
+
+.hp-stats-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 32px;
+    text-align: center;
+}
+
+.hp-stat-number-primary {
+    font-size: 36px;
+    color: var(--primary);
+    font-weight: 800;
+    line-height: 1;
+}
+
+.hp-stat-number-accent {
+    font-size: 36px;
+    color: var(--accent);
+    font-weight: 800;
+    line-height: 1;
+}
+
+.hp-stat-number-secondary {
+    font-size: 36px;
+    color: var(--secondary);
+    font-weight: 800;
+    line-height: 1;
+}
+
+.hp-stat-number-danger {
+    font-size: 36px;
+    color: #ef4444;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.hp-stat-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 8px;
+}
+
+/* News Section */
+.hp-news-section {
+    padding-top: 80px;
+}
+
+.hp-news-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 40px;
+}
+
+.hp-section-title {
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.hp-section-subtitle {
+    color: var(--text-muted);
+    margin-top: 8px;
+}
+
+.hp-view-all-link {
+    color: var(--primary);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Tournament Info Section */
+.hp-tournament-info-section {
+    background: rgba(255,255,255,0.01);
+    border-top: 1px solid rgba(255,255,255,0.03);
+    margin-top: 80px;
+    padding: 80px 0;
+}
+
+.hp-tournament-header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 50px;
+}
+
+.hp-tournament-subtitle {
+    color: var(--text-muted);
+    margin-top: 12px;
+}
+
+.hp-nations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+}
+
+.hp-nation-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.hp-nation-title-primary {
+    color: var(--primary);
+    font-size: 20px;
+    margin-bottom: 12px;
+}
+
+.hp-nation-title-accent {
+    color: var(--accent);
+    font-size: 20px;
+    margin-bottom: 12px;
+}
+
+.hp-nation-title-secondary {
+    color: var(--secondary);
+    font-size: 20px;
+    margin-bottom: 12px;
+}
+
+.hp-nation-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+.hp-nation-footer {
+    font-weight: 600;
+    font-size: 13px;
+}

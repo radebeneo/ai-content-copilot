@@ -1,0 +1,56 @@
+/* ==============================================
+   _Layout.cshtml – Extracted Inline Styles
+   ============================================== */
+
+/* Footer badges container (LIVE UPDATES area) */
+.footer-badges {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+/* Subscribe section description override */
+.footer-subscribe-description {
+    font-size: 13px;
+}
+
+/* Subscribe form row */
+.footer-subscribe-form {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+/* Subscribe email input */
+.footer-subscribe-input {
+    flex-grow: 1;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: white;
+    font-size: 13px;
+}
+
+/* Subscribe submit button */
+.footer-subscribe-button {
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+/* Footer bottom links row */
+.footer-bottom-links {
+    display: flex;
+    gap: 24px;
+}
+
+/* Footer bottom link (privacy, terms, cookies) */
+.footer-bottom-link {
+    opacity: 0.7;
+}
+
+.footer-bottom-link:hover {
+    opacity: 1;
+}

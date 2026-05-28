@@ -4,12 +4,12 @@
 
 @{
     // Retrieve the home page to get site settings
-    var homePage = Model.AncestorOrSelf<ContentModels.HomePage>();
+    var homePage = Model?.AncestorOrSelf<ContentModels.HomePage>();
     var siteTitle = homePage?.SiteTitle ?? "FIFA World Cup 2026 News";
     var siteSubtitle = homePage?.SiteSubtitle ?? "Your ultimate destination for the 2026 World Cup updates";
     
     // Determine dynamic navigation links
-    var root = Model.Root();
+    var root = Model?.Root();
     var newsLanding = root?.FirstChild<ContentModels.NewsLandingPage>();
     
     var homeUrl = root?.Url() ?? "/";
@@ -24,8 +24,9 @@
     <title>@ViewData["Title"] | @siteTitle</title>
     <meta name="description" content="@(ViewData["Description"] ?? siteSubtitle)" />
     
-    <!-- Custom Style Sheet -->
+    <!-- Custom Style Sheets -->
     <link rel="stylesheet" href="/css/site.css" />
+    <link rel="stylesheet" href="/css/layout.css" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
@@ -41,13 +42,13 @@
             <nav>
                 <ul>
                     <li><a href="@homeUrl" id="nav-home">Home</a></li>
-                    <li><a href="#" id="nav-news">News Feed</a></li>
+                    <li><a href="@newsUrl" id="nav-news">News Feed</a></li>
                     <li><a href="#" id="nav-matches">Matches</a></li>
                     <li><a href="#" id="nav-teams">Teams</a></li>
                 </ul>
             </nav>
             
-            <a href="@newsUrl" class="cta-button" id="cta-tickets">Latest News</a>
+            <!-- <a href="@newsUrl" class="cta-button" id="cta-tickets">Latest News</a> -->
         </div>
     </header>
 
@@ -59,7 +60,7 @@
     <!-- Floating AI Copilot Panel -->
     @await Html.PartialAsync("AiCopilot")
 
-    <!-- Premium Footer -->
+    <!--  Footer -->
     <footer>
         <div class="footer-grid">
             <div class="footer-column">
@@ -67,7 +68,7 @@
                 <p class="footer-description">
                     @siteSubtitle Offering premium articles, real-time match reports, team analysis, and the latest tournament updates straight from the pitch.
                 </p>
-                <div style="display: flex; gap: 12px; margin-top: 10px;">
+                <div class="footer-badges">
                     <span class="badge-live">LIVE UPDATES</span>
                 </div>
             </div>
@@ -94,14 +95,12 @@
             
             <div class="footer-column">
                 <h4 class="footer-title">Subscribe to Updates</h4>
-                <p class="footer-description" style="font-size: 13px;">
+                <p class="footer-description footer-subscribe-description">
                     Stay updated with breaking news, exclusive stories, and ticket announcements.
                 </p>
-                <div style="display: flex; gap: 8px; margin-top: 8px;">
-                    <input type="email" placeholder="Your email address" style="
-                        flex-grow: 1; padding: 10px 14px; background: rgba(255,255,255,0.05); 
-                        border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 13px;" />
-                    <button class="cta-button" style="padding: 10px 16px; border-radius: 8px; border: none; cursor: pointer;">Join</button>
+                <div class="footer-subscribe-form">
+                    <input type="email" placeholder="Your email address" class="footer-subscribe-input" />
+                    <button class="cta-button footer-subscribe-button">Join</button>
                 </div>
             </div>
         </div>
@@ -110,10 +109,10 @@
             <div>
                 &copy; @DateTime.Now.Year @siteTitle. All rights reserved.
             </div>
-            <div style="display: flex; gap: 24px;">
-                <a href="#" style="opacity: 0.7; hover: opacity: 1;">Privacy Policy</a>
-                <a href="#" style="opacity: 0.7; hover: opacity: 1;">Terms of Service</a>
-                <a href="#" style="opacity: 0.7; hover: opacity: 1;">Cookie Settings</a>
+            <div class="footer-bottom-links">
+                <a href="#" class="footer-bottom-link">Privacy Policy</a>
+                <a href="#" class="footer-bottom-link">Terms of Service</a>
+                <a href="#" class="footer-bottom-link">Cookie Settings</a>
             </div>
         </div>
     </footer>

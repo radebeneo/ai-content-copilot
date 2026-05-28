@@ -6,11 +6,15 @@
     ViewData["Title"] = Model.Heading ?? "News Detail";
     ViewData["Description"] = Model.Subheading;
     
-    var imgUrl = Model.HeaderImage?.Url() ?? "/media/2gtdwgto/image.jpg";
+    var imgUrl = Model.HeaderImage?.Url();
     var newsLanding = Model.Root().FirstChild<ContentModels.NewsLandingPage>();
 }
 
-<article class="container" style="padding-top: 40px;">
+@section Styles {
+    <link rel="stylesheet" href="/css/newsdetail.css" />
+}
+
+<article class="container nd-article">
     <!-- Article Header -->
     <div class="article-header">
         <div class="article-meta">
@@ -36,19 +40,10 @@
 
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vel molestie lorem. Phasellus congue justo quis eros pharetra, vitae consequat tellus consequat. Vivamus ut lorem non sapien egestas scelerisque non in diam. Mauris eget nibh erat. Sed sollicitudin sodales libero at dignissim. Nam cursus nisl sed dolor hendrerit, scelerisque interdum ex commodo. Sed consequat a neque ut tristique.</p>
 
-            <h3 style="margin: 32px 0 16px; font-size: 24px; font-weight: 700; color: white;">A New Era of Football</h3>
+            <h3 class="nd-heading">A New Era of Football</h3>
             <p>Morbi finibus arcu nec nisi condimentum, in bibendum lectus eleifend. Praesent a nunc ut nunc dictum aliquam vitae vitae neque. Mauris dictum sodales dolor at iaculis. Fusce feugiat purus nunc, sit amet euismod sem imperdiet at. Maecenas ac erat sed turpis volutpat elementum. Ut cursus, velit et convallis convallis, metus leo porta ex, at accumsan velit nibh ac felis. Proin aliquet nisl ligula, at tincidunt magna mattis vel.</p>
 
-            <blockquote style="
-                border-left: 4px solid var(--primary); 
-                padding: 16px 24px; 
-                margin: 32px 0; 
-                background: rgba(255,255,255,0.02); 
-                border-radius: 0 12px 12px 0; 
-                font-style: italic; 
-                font-size: 18px; 
-                line-height: 1.6;
-                color: #e2e8f0;">
+            <blockquote class="nd-blockquote">
                 "The World Cup 2026 will redefine how we experience football on a global scale. With 48 nations competing across North America, the scale of this tournament will reach unprecedented heights."
             </blockquote>
 
@@ -62,7 +57,7 @@
             @if (newsLanding != null)
             {
                 <h3 class="sidebar-title">More Stories</h3>
-                <ul class="sidebar-list" style="margin-bottom: 40px;">
+                <ul class="sidebar-list nd-sidebar-list">
                     @foreach (var sisterArticle in newsLanding.Children<ContentModels.NewsDetail>().Where(x => x.Id != Model.Id).Take(3))
                     {
                         <li class="sidebar-item">
@@ -75,22 +70,22 @@
             }
 
             <h3 class="sidebar-title">Tournament Facts</h3>
-            <div style="font-size: 13px; color: var(--text-muted); display: flex; flex-direction: column; gap: 12px;">
-                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+            <div class="nd-facts-container">
+                <div class="nd-fact-item-bordered">
                     <span>Start Date:</span>
-                    <span style="color: white; font-weight: 600;">June 11, 2026</span>
+                    <span class="nd-fact-value">June 11, 2026</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                <div class="nd-fact-item-bordered">
                     <span>End Date:</span>
-                    <span style="color: white; font-weight: 600;">July 19, 2026</span>
+                    <span class="nd-fact-value">July 19, 2026</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                <div class="nd-fact-item-bordered">
                     <span>Teams:</span>
-                    <span style="color: white; font-weight: 600;">48 (Expanded)</span>
+                    <span class="nd-fact-value">48 (Expanded)</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; padding-bottom: 8px;">
+                <div class="nd-fact-item">
                     <span>Matches:</span>
-                    <span style="color: white; font-weight: 600;">104 Matches</span>
+                    <span class="nd-fact-value">104 Matches</span>
                 </div>
             </div>
         </aside>

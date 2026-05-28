@@ -10,81 +10,73 @@
     var articles = Model.Children<ContentModels.NewsDetail>().ToList();
 }
 
-<section class="container" style="padding-top: 60px;">
+<section class="container nl-section">
     <!-- Page Header -->
-    <div style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 24px; margin-bottom: 40px;">
-        <span class="badge-live" style="margin-bottom: 12px;">Exclusive Coverage</span>
-        <h1 style="font-size: 48px; font-weight: 800;">@Model.Heading</h1>
-        <p style="color: var(--text-muted); font-size: 18px; margin-top: 8px;">Breaking stories, match previews, and team insights for the 2026 World Cup.</p>
+    <div class="nl-header">
+        <span class="badge-live nl-badge">Exclusive Coverage</span>
+        <h1 class="nl-title">@Model.Heading</h1>
+        <p class="nl-subtitle">Breaking stories, match previews, and team insights for the 2026 World Cup.</p>
     </div>
 
     <!-- Main Grid Content -->
     <div class="article-body-wrapper">
         <!-- Main News Column -->
         <div>
-            <div style="display: grid; grid-template-columns: 1fr; gap: 32px;">
-                @if (articles.Any())
-                {
-                    @foreach (var article in articles)
-                    {
-                        var imgUrl = article.HeaderImage?.Url() ?? "/media/2gtdwgto/image.jpg";
-                        <article class="news-card" style="flex-direction: row; min-height: 240px; @(articles.IndexOf(article) == 0 ? "border-color: var(--primary);" : "")">
-                            <div class="card-image-wrapper" style="width: 35%; aspect-ratio: auto; min-height: 100%;">
-                                <img src="@imgUrl" alt="@article.Heading" style="height: 100%; object-fit: cover;" />
-                            </div>
-                            <div class="card-content" style="width: 65%; padding: 24px;">
-                                <div class="card-date">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                                    @article.CreateDate.ToString("MMMM dd, yyyy")
-                                    @if (articles.IndexOf(article) == 0)
-                                    {
-                                        <span class="badge-live" style="font-size: 9px; padding: 2px 6px; margin-left: 10px;">LATEST</span>
-                                    }
-                                </div>
-                                <h2 style="font-size: 22px; margin-bottom: 8px; font-weight: 700; line-height: 1.3;">
-                                    <a href="@article.Url()" style="color: white; hover: color: var(--primary);">@article.Heading</a>
-                                </h2>
-                                <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px; flex-grow: 1;">
-                                    @(string.IsNullOrEmpty(article.Subheading) ? "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras interdum pretium purus. Morbi convallis imperdiet leo eget porta." : article.Subheading)
-                                </p>
-                                <a href="@article.Url()" class="card-link">
-                                    Read Full Story 
-                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </a>
-                            </div>
-                        </article>
-                    }
-                }
+            <div class="nl-grid">
+                
+                @* ── Static article (not from database) ── *@
+                <article class="news-card nl-card">
+                    <div class="card-image-wrapper nl-card-image-wrapper">
+                        <img src="/media/mex-rsa.jpeg" alt="The World Cup Tournament Kicks Off in Mexico City" class="nl-card-img" />
+                    </div>
+                    <div class="card-content nl-card-content">
+                        <div class="card-date">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            May 27, 2026
+                        </div>
+                        <h2 class="nl-card-title">
+                            <a href="#" class="nl-card-title-link">The World Cup Tournament Kicks Off in Mexico City</a>
+                        </h2>
+                        <p class="nl-card-text">
+                            Sixteen years ago, a thunderous left-footed strike from Siphiwe Tshabalala and a sea of buzzing vuvuzelas in Johannesburg ushered in a new era of football. On June 11, 2026, history comes full circle.
+                            In a poetic twist of fate, co-hosts Mexico will kick off the biggest-ever FIFA World Cup against South Africa, reversing the roles of their iconic 2010 opening-match stalemate.
+                        </p>
+                        <a href="/article" class="card-link">
+                            Read Full Story
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </a>
+                    </div>
+                </article>
             </div>
         </div>
         
         <!-- Sidebar -->
         <aside class="article-sidebar">
             <h3 class="sidebar-title">Tournament Categories</h3>
-            <ul class="sidebar-list" style="margin-bottom: 40px; display: flex; flex-direction: column; gap: 12px;">
-                <li style="display: flex; justify-content: space-between; font-size: 14px;">
-                    <a href="#" style="color: var(--primary);">Tournament News</a>
-                    <span style="opacity: 0.5;">(14)</span>
+            <ul class="sidebar-list nl-sidebar-list">
+                <li class="nl-sidebar-item">
+                    <a href="#" class="nl-sidebar-link-active">Tournament News</a>
+                    <span class="nl-sidebar-count">(14)</span>
                 </li>
-                <li style="display: flex; justify-content: space-between; font-size: 14px;">
+                <li class="nl-sidebar-item">
                     <a href="#">Host Cities & Stadiums</a>
-                    <span style="opacity: 0.5;">(8)</span>
+                    <span class="nl-sidebar-count">(8)</span>
                 </li>
-                <li style="display: flex; justify-content: space-between; font-size: 14px;">
+                <li class="nl-sidebar-item">
                     <a href="#">Team Profiles</a>
-                    <span style="opacity: 0.5;">(32)</span>
+                    <span class="nl-sidebar-count">(32)</span>
                 </li>
-                <li style="display: flex; justify-content: space-between; font-size: 14px;">
+                <li class="nl-sidebar-item">
                     <a href="#">Ticket Information</a>
-                    <span style="opacity: 0.5;">(5)</span>
+                    <span class="nl-sidebar-count">(5)</span>
                 </li>
             </ul>
 
             <h3 class="sidebar-title">About the 2026 Edition</h3>
-            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px;">
+            <p class="nl-sidebar-text">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras interdum pretium purus. Morbi convallis imperdiet leo eget porta. Pellentesque dictum accumsan pulvinar.
             </p>
-            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">
+            <p class="nl-sidebar-text-last">
                 Aliquam at porttitor sem. Curabitur sed nisl eget elit mollis at feugiat urna sodales. Aliquam erat volutpat.
             </p>
         </aside>
